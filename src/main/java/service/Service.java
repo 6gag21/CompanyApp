@@ -4,91 +4,85 @@ import console.Console;
 import model.*;
 
 import java.io.*;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Properties;
-import java.util.Scanner;
+import java.util.*;
 
-import util.Command;
-import util.PropertyKeys;
+import util.PropertyManager;
 import util.StringUtil;
 
 public class Service implements PropertyManager.PropertiesListener {
     public static final String FILE_PATH = "C:\\Users\\Morrison\\Desktop\\data.bin";
+    private HashMap<String, Employee> employeeHashMap;
 
    private static PropertyManager propertyManager;
-   private static Properties properties;
-   private static Company company;
+   private static ResourceBundle properties;
 
-    private void add(Scanner scanner) {
-        Console.print(properties.getProperty(PropertyKeys.ENTER_FIRST_NAME.name()));
-        String firstName = scanner.next();
-        Console.print(properties.getProperty(PropertyKeys.ENTER_LAST_NAME.name()));
-        String lastName = scanner.next();
-        company.employeeHashMap.put(lastName, new Employee(firstName, lastName));
-        Console.print(properties.getProperty(PropertyKeys.EMPLOYEE_ADDED.name()));
+    private void add() {
+        Employee employee = Console.addEmployee();
+        employeeHashMap.put(employee.getLastName(), employee);
+        Console.print(properties.getString("EMPLOYEE_ADDED"));
     }
 
-    private void find(Scanner scanner) {
-        Console.print(properties.getProperty(PropertyKeys.FOR_FIND.name()));
-        String lastName = scanner.next();
+    private void find() {
+        String lastName = Console.findEmployee();
         if(checkByLastName(lastName)){
-            Employee employee = company.employeeHashMap.get(lastName);
-            Console.print(properties.getProperty(PropertyKeys.FIRST_NAME.name()) + employee.getFirstName()+ " | "
-                        + properties.getProperty(PropertyKeys.LAST_NAME.name()) + employee.getLastName());
+            Employee employee = employeeHashMap.get(lastName);
+            Console.print(properties.getString("FIRST_NAME") + employee.getFirstName()+ " | "
+                        + properties.getString("LAST_NAME") + employee.getLastName());
         }else {
-            Console.print(properties.getProperty(PropertyKeys.WRONG_LAST_NAME.name()));
+            Console.print(properties.getString("WRONG_LAST_NAME"));
         }
     }
 
     private void print() {
-        if(company.employeeHashMap.isEmpty()){
-            Console.print(properties.getProperty(PropertyKeys.EMPLOYEE_LIST_IS_EMPTY.name()));
+        if(employeeHashMap.isEmpty()){
+            Console.print(properties.getString("EMPLOYEE_LIST_IS_EMPTY"));
+        }else{
+
+            Collection<Employee> collection = employeeHashMap.values();
+            for (Employee employee : collection)
+                Console.print(properties.getString("FIRST_NAME") + employee.getFirstName() + " | "
+                        + properties.getString("LAST_NAME") + employee.getLastName());
         }
-        Collection<Employee> collection = company.employeeHashMap.values();
-        for (Employee employee : collection)
-            Console.print(properties.getProperty(PropertyKeys.FIRST_NAME.name()) + employee.getFirstName() + " | " + properties.getProperty(PropertyKeys.LAST_NAME.name()) + employee.getLastName());
     }
 
-    private void remove(Scanner scanner) {
-        Console.print(properties.getProperty(PropertyKeys.FOR_REMOVE.name()));
-        String lastName = scanner.next();
+    private void remove() {
+        String lastName = Console.removeEmployee();
         if(checkByLastName(lastName)){
-            company.employeeHashMap.remove(lastName);
-            Console.print(properties.getProperty(PropertyKeys.EMPLOYEE_REMOVED.name()));
+            employeeHashMap.remove(lastName);
+            Console.print(properties.getString("EMPLOYEE_REMOVED"));
         } else {
-            Console.print(properties.getProperty(PropertyKeys.WRONG_LAST_NAME.name()));
+            Console.print(properties.getString("WRONG_LAST_NAME"));
         }
     }
 
     private boolean checkByLastName(String lastName){
-        return company.employeeHashMap.containsKey(lastName);
+        return employeeHashMap.containsKey(lastName);
     }
 
-    private   boolean readCommand(String command, Scanner scanner) {
-        if(!Command.map.containsKey(command)){
-            Console.print(properties.getProperty(PropertyKeys.WRONG_COMMAND.name()));
-            return true;
-        }
-        switch (Command.map.get(command)) {
-            case ADD:
-                add(scanner);
+    private boolean readCommand(String command) {
+
+        switch (command.toUpperCase()) {
+            case "ADD":
+                add();
                 break;
-            case FIND:
-                find(scanner);
+            case "FIND":
+                find();
                 break;
-            case PRINT:
+            case "PRINT":
                 print();
                 break;
-            case REMOVE:
-                remove(scanner);
+            case "REMOVE":
+                remove();
                 break;
-            case CHOOSE_LANGUAGE:
-                selectLanguage(scanner);
+            case "LANGUAGE":
+                chooseLanguage();
                 break;
-            case CLOSE:
+            case "CLOSE":
                 writeFile();
                 return false;
+
+            default:
+                Console.print(properties.getString("WRONG_COMMAND"));
 
         }
         return true;
@@ -97,37 +91,37 @@ public class Service implements PropertyManager.PropertiesListener {
     public  void run(){
         init();
         if (readFile() != null){
-            company.employeeHashMap = (HashMap<String, Employee>) readFile();
+            employeeHashMap = (HashMap<String, Employee>) readFile();
         }
+
         boolean b = true;
-        Scanner scanner = Console.write();
-        selectLanguage(scanner);
+        chooseLanguage();
+
         while(b) {
-            Console.print(properties.getProperty(PropertyKeys.ENTER_COMMAND.name()));
-            b = readCommand(scanner.next().toUpperCase(), scanner);
+            Console.print(properties.getString("ENTER_COMMAND"));
+            b = readCommand(Console.readCommand());
         }
-        scanner.close();
+
     }
 
     private void init(){
         propertyManager = PropertyManager.getInstance();
-        company = new Company();
+        employeeHashMap = new HashMap<>();
     }
 
-    private void selectLanguage(Scanner scanner){
-        Console.print(StringUtil.SELECT_LANGUAGE);
-        String str = scanner.next().toUpperCase();
+    private void chooseLanguage(){
+        String str = Console.chooseLanguage();
         if(str.equals(StringUtil.EN)) {
-            propertyManager.setProperties(PropertyManager.enLangPath);
+            propertyManager.setProperties(PropertyManager.locales[0]);
         }
         else if(str.equals(StringUtil.RU))  {
-            propertyManager.setProperties(PropertyManager.ruLangPath);
+            propertyManager.setProperties(PropertyManager.locales[1]);
         }
         else{
             Console.print(StringUtil.WRONG_LANGUAGE);
-            selectLanguage(scanner);
+            chooseLanguage();
         }
-        Console.print(properties.getProperty(PropertyKeys.MANUAL.name()));
+        Console.print(properties.getString("MANUAL"));
     }
 
     @Override
@@ -137,7 +131,7 @@ public class Service implements PropertyManager.PropertiesListener {
     }
     private void writeFile(){
         try(ObjectOutputStream serial = new ObjectOutputStream(new FileOutputStream(FILE_PATH))){
-            serial.writeObject(company.employeeHashMap);
+            serial.writeObject(employeeHashMap);
             serial.flush();
         } catch (IOException e) {
             e.printStackTrace();
