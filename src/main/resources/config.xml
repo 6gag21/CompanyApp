@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+    <logger>
+        <type>FILE</type>
+        <pathToFile>D:\log.txt</pathToFile>
+        <logLevel>INFO</logLevel>
+        <dateFormat>yyyy.MM.dd 'at' HH:mm:ss</dateFormat>
+        <logPrefix>EGS</logPrefix>
+    </logger>
+    <pathToData>SomeThing</pathToData>
+</config>

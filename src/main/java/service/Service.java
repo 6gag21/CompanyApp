@@ -1,22 +1,30 @@
 package service;
 
 import console.Console;
+import logger.Logger;
+import logger.xml.XmlParser;
 import model.*;
 
 import java.io.*;
 import java.util.*;
+import java.util.logging.LogManager;
 
+import org.xml.sax.SAXException;
 import util.PropertyManager;
 import util.StringUtil;
 
+import javax.xml.parsers.ParserConfigurationException;
+
 public class Service implements PropertyManager.PropertiesListener {
-    public static final String FILE_PATH = "C:\\Users\\Morrison\\Desktop\\data.bin";
+    public static final String DATA_FILE_PATH = "C:\\Users\\Morrison\\Desktop\\data.bin";
     private HashMap<String, Employee> employeeHashMap;
 
    private static PropertyManager propertyManager;
    private static ResourceBundle properties;
+   private static  Logger logger;
 
     private void add() {
+        logger.write("Add method start");
         Employee employee = Console.addEmployee();
         employeeHashMap.put(employee.getLastName(), employee);
         Console.print(properties.getString("EMPLOYEE_ADDED"));
@@ -89,6 +97,8 @@ public class Service implements PropertyManager.PropertiesListener {
     }
 
     public  void run(){
+        logger = Logger.getLogger("Test");
+        logger.write("START PROGRAM");
         init();
         if (readFile() != null){
             employeeHashMap = (HashMap<String, Employee>) readFile();
@@ -105,6 +115,7 @@ public class Service implements PropertyManager.PropertiesListener {
     }
 
     private void init(){
+        logger.write("Init method start");
         propertyManager = PropertyManager.getInstance();
         employeeHashMap = new HashMap<>();
     }
@@ -130,7 +141,7 @@ public class Service implements PropertyManager.PropertiesListener {
         properties = propertyManager.getProperties();
     }
     private void writeFile(){
-        try(ObjectOutputStream serial = new ObjectOutputStream(new FileOutputStream(FILE_PATH))){
+        try(ObjectOutputStream serial = new ObjectOutputStream(new FileOutputStream(DATA_FILE_PATH))){
             serial.writeObject(employeeHashMap);
             serial.flush();
         } catch (IOException e) {
@@ -139,7 +150,7 @@ public class Service implements PropertyManager.PropertiesListener {
     }
 
     private Object readFile(){
-        File file = new File(FILE_PATH);
+        File file = new File(DATA_FILE_PATH);
         Object obj;
         if(!file.exists()){
             try {
@@ -149,7 +160,7 @@ public class Service implements PropertyManager.PropertiesListener {
             }
         } else
             {
-            try (ObjectInputStream serial = new ObjectInputStream(new FileInputStream(FILE_PATH))) {
+            try (ObjectInputStream serial = new ObjectInputStream(new FileInputStream(DATA_FILE_PATH))) {
                 obj = serial.readObject();
                 return obj;
             } catch (IOException | ClassNotFoundException e) {

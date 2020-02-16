@@ -10,9 +10,10 @@ public final class PropertyManager {
     private PropertiesListener propertiesListenerForService;
     private static Locale currentLocale;
     private static ResourceBundle properties;
-    public static Locale[] locales = {new Locale("en", "US"), new Locale("ru", "RU")};
+    public static Locale[] locales;
 
     private PropertyManager(){
+        locales = new Locale[] {new Locale("en", "US"), new Locale("ru", "RU")};
         currentLocale = Locale.ENGLISH;
         loadProperties(currentLocale);
         propertiesListenerForService = new Service();
