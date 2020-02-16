@@ -2,7 +2,8 @@ package console;
 
 
 import model.Employee;
-import util.PropertyManager;
+import util.ProjectManager;
+import util.LangManager;
 import util.StringUtil;
 
 import java.util.ResourceBundle;
@@ -15,6 +16,12 @@ public class Console {
 
     static{
         init();
+    }
+
+    private static void init(){
+        ProjectManager.init();
+        scanner = new Scanner(System.in);
+        properties = LangManager.getInstance().getProperties();
     }
 
     public static String chooseLanguage(){
@@ -45,11 +52,6 @@ public class Console {
         Console.print(properties.getString("FOR_REMOVE"));
 
         return scanner.next();
-    }
-
-    private static void init(){
-        scanner = new Scanner(System.in);
-        properties = PropertyManager.getInstance().getProperties();
     }
 
     public static void print(String string){

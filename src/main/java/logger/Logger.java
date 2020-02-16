@@ -1,25 +1,26 @@
 package logger;
 
-import logger.model.LoggerSettings;
+import model.Settings;
+import util.ProjectManager;
 
 import java.io.*;
 import java.time.LocalDateTime;
 
 
-public class Logger implements Ilogger {
+public class Logger implements LoggerManagement {
 
-    private LoggerSettings loggerSettings;
+    private Settings settings;
     private boolean isLogging;
 
     private Logger(){
         startLogging();
-        this.loggerSettings = LogManager.getLogManager().getLoggerSettings();
+        this.settings = ProjectManager.getInstance().getSettings();
     }
 
     private void writeToFile(String message){
-        try (PrintWriter printWriter = new PrintWriter(new OutputStreamWriter(new FileOutputStream(loggerSettings.getFileToWrite(), true)))) {
-            printWriter.printf("%s | %s | %s | %s %n", LocalDateTime.now().format(loggerSettings.getDateTimeFormatter()),
-                    loggerSettings.getLogLevel().toString(), loggerSettings.getLogPrefix(), message);
+        try (PrintWriter printWriter = new PrintWriter(new OutputStreamWriter(new FileOutputStream(settings.getLogFile(), true)))) {
+            printWriter.printf("%s | %s | %s | %s %n", LocalDateTime.now().format(settings.getDateTimeFormatter()),
+                    settings.getLogLevel().toString(), settings.getLogPrefix(), message);
             printWriter.flush();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -30,14 +31,14 @@ public class Logger implements Ilogger {
 
 
     private void writeToConsole(String message){
-        System.err.printf("%s | %s | %s | %s %n", LocalDateTime.now().format(loggerSettings.getDateTimeFormatter()),
-                loggerSettings.getLogLevel().toString(), loggerSettings.getLogPrefix(), message);
+        System.err.printf("%s | %s | %s | %s %n", LocalDateTime.now().format(settings.getDateTimeFormatter()),
+                settings.getLogLevel().toString(), settings.getLogPrefix(), message);
     }
 
     @Override
     public void write(String message) {
         if(!isLogging) return;
-        switch (loggerSettings.getLoggerType()){
+        switch (settings.getLoggerType()){
             case CONSOLE:
                 writeToConsole(message);
                 break;

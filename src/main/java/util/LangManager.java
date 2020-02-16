@@ -4,24 +4,24 @@ import service.Service;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
-public final class PropertyManager {
+public final class LangManager {
 
-    private static PropertyManager instance;
+    private static LangManager instance;
     private PropertiesListener propertiesListenerForService;
-    private static Locale currentLocale;
-    private static ResourceBundle properties;
-    public static Locale[] locales;
+    private Locale currentLocale;
+    private ResourceBundle properties;
+    public  Locale[] locales;
 
-    private PropertyManager(){
+    private LangManager(){
         locales = new Locale[] {new Locale("en", "US"), new Locale("ru", "RU")};
         currentLocale = Locale.ENGLISH;
         loadProperties(currentLocale);
         propertiesListenerForService = new Service();
     }
 
-    public static PropertyManager getInstance(){
+    public static LangManager getInstance(){
         if(instance == null){
-            instance = new PropertyManager();
+            instance = new LangManager();
         }
         return instance;
     }

@@ -2,10 +2,10 @@
 <config>
     <logger>
         <type>FILE</type>
-        <pathToFile>D:\log.txt</pathToFile>
+        <pathToFile>C:\Users\Morrison\Desktop\Log\log.txt</pathToFile>
         <logLevel>INFO</logLevel>
         <dateFormat>yyyy.MM.dd 'at' HH:mm:ss</dateFormat>
         <logPrefix>EGS</logPrefix>
     </logger>
-    <pathToData>SomeThing</pathToData>
+    <pathToData>C:\Users\Morrison\Desktop\Data\data.bin</pathToData>
 </config>

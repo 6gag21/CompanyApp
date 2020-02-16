@@ -1,23 +1,24 @@
 package service;
 
 import console.Console;
+import data.Data;
 import logger.Logger;
 import model.*;
 
 import java.io.*;
 import java.util.*;
 
-import util.PropertyManager;
+import util.LangManager;
 import util.StringUtil;
 
 
-public class Service implements PropertyManager.PropertiesListener {
-    public static final String DATA_FILE_PATH = "C:\\Users\\Morrison\\Desktop\\data.bin";
-    private HashMap<String, Employee> employeeHashMap;
+public class Service implements LangManager.PropertiesListener {
 
-   private static PropertyManager propertyManager;
-   private static ResourceBundle properties;
-   private static  Logger logger;
+    private Map<String, Employee> employeeHashMap;
+    private static Data data;
+    private static LangManager langManager;
+    private static ResourceBundle properties;
+    private static  Logger logger;
 
     private void add() {
         logger.write("Add method start");
@@ -97,7 +98,7 @@ public class Service implements PropertyManager.PropertiesListener {
         logger.write("START PROGRAM");
         init();
         if (readFile() != null){
-            employeeHashMap = (HashMap<String, Employee>) readFile();
+            employeeHashMap = readFile();
         }
 
         boolean b = true;
@@ -112,17 +113,18 @@ public class Service implements PropertyManager.PropertiesListener {
 
     private void init(){
         logger.write("Init method start");
-        propertyManager = PropertyManager.getInstance();
+        langManager = LangManager.getInstance();
         employeeHashMap = new HashMap<>();
+        data = new Data();
     }
 
     private void chooseLanguage(){
         String str = Console.chooseLanguage();
         if(str.equals(StringUtil.EN)) {
-            propertyManager.setProperties(PropertyManager.locales[0]);
+            langManager.setProperties(LangManager.getInstance().locales[0]);
         }
         else if(str.equals(StringUtil.RU))  {
-            propertyManager.setProperties(PropertyManager.locales[1]);
+            langManager.setProperties(LangManager.getInstance().locales[1]);
         }
         else{
             Console.print(StringUtil.WRONG_LANGUAGE);
@@ -134,36 +136,13 @@ public class Service implements PropertyManager.PropertiesListener {
     @Override
 
     public  void changeProperties() {
-        properties = propertyManager.getProperties();
+        properties = langManager.getProperties();
     }
     private void writeFile(){
-        try(ObjectOutputStream serial = new ObjectOutputStream(new FileOutputStream(DATA_FILE_PATH))){
-            serial.writeObject(employeeHashMap);
-            serial.flush();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        data.writeFile(employeeHashMap);
     }
 
-    private Object readFile(){
-        File file = new File(DATA_FILE_PATH);
-        Object obj;
-        if(!file.exists()){
-            try {
-               file.createNewFile();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        } else
-            {
-            try (ObjectInputStream serial = new ObjectInputStream(new FileInputStream(DATA_FILE_PATH))) {
-                obj = serial.readObject();
-                return obj;
-            } catch (IOException | ClassNotFoundException e) {
-                e.printStackTrace();
-
-            }
-        }
-        return null;
+    private Map<String, Employee> readFile(){
+       return data.readFile();
     }
 }
