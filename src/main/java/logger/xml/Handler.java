@@ -4,7 +4,6 @@ import logger.model.LoggerSettings;
 import logger.util.LogLevel;
 import logger.util.LoggerType;
 import org.xml.sax.Attributes;
-import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 import java.io.File;

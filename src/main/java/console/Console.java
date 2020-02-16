@@ -2,7 +2,6 @@ package console;
 
 
 import model.Employee;
-import service.Service;
 import util.PropertyManager;
 import util.StringUtil;
 
@@ -10,11 +9,7 @@ import java.util.ResourceBundle;
 import java.util.Scanner;
 
 public class Console {
-    /*TODO Добавить реализацию конфигураций:
-       Создаем POJO класс Settings, который получает конфигурации из
-       файла config.logger.xml в resources. Получаем в классе Console объект класса Settings.
-       и реализуем логирование и т.д.
-     */
+
     private static Scanner scanner;
     private static ResourceBundle properties;
 

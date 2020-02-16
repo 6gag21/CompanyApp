@@ -2,18 +2,14 @@ package service;
 
 import console.Console;
 import logger.Logger;
-import logger.xml.XmlParser;
 import model.*;
 
 import java.io.*;
 import java.util.*;
-import java.util.logging.LogManager;
 
-import org.xml.sax.SAXException;
 import util.PropertyManager;
 import util.StringUtil;
 
-import javax.xml.parsers.ParserConfigurationException;
 
 public class Service implements PropertyManager.PropertiesListener {
     public static final String DATA_FILE_PATH = "C:\\Users\\Morrison\\Desktop\\data.bin";
