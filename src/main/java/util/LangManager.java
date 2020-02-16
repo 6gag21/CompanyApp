@@ -1,6 +1,7 @@
 package util;
 
 import service.Service;
+
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -10,19 +11,23 @@ public final class LangManager {
     private PropertiesListener propertiesListenerForService;
     private Locale currentLocale;
     private ResourceBundle properties;
-    public  Locale[] locales;
+    public Locale[] locales;
 
-    private LangManager(){
-        locales = new Locale[] {new Locale("en", "US"), new Locale("ru", "RU")};
+    private LangManager() {
+        locales = new Locale[]{new Locale("en", "US"), new Locale("ru", "RU")};
         currentLocale = Locale.ENGLISH;
         loadProperties(currentLocale);
         propertiesListenerForService = new Service();
     }
 
-    public static LangManager getInstance(){
-        if(instance == null){
+    public static void init() {
+        if (instance == null) {
             instance = new LangManager();
         }
+    }
+
+    public static LangManager getInstance() {
+        init();
         return instance;
     }
 
@@ -30,12 +35,12 @@ public final class LangManager {
         properties = ResourceBundle.getBundle("lang/messages", locale);
     }
 
-    public void setProperties(Locale locale){
+    public void setProperties(Locale locale) {
         loadProperties(locale);
         propertiesListenerForService.changeProperties();
     }
 
-    public ResourceBundle getProperties(){
+    public ResourceBundle getProperties() {
         return properties;
     }
 

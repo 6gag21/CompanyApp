@@ -11,14 +11,14 @@ public class Data implements DataManagement<Map<String, Employee>> {
 
     File dataFile;
 
-   public Data(){
-       this.dataFile = ProjectManager.getInstance().getSettings().getDataFile();
-   }
+    public Data() {
+        this.dataFile = ProjectManager.getInstance().getSettings().getDataFile();
+    }
 
 
     @Override
     public void writeFile(Map<String, Employee> stringEmployeeMap) {
-        try(ObjectOutputStream serial = new ObjectOutputStream(new FileOutputStream(dataFile))){
+        try (ObjectOutputStream serial = new ObjectOutputStream(new FileOutputStream(dataFile))) {
             serial.writeObject(stringEmployeeMap);
             serial.flush();
         } catch (IOException e) {
@@ -29,15 +29,15 @@ public class Data implements DataManagement<Map<String, Employee>> {
     @Override
     public Map<String, Employee> readFile() {
         HashMap<String, Employee> employeeHashMap;
-        if(!dataFile.exists()){
+        if (!dataFile.exists()) {
             try {
-               dataFile.createNewFile();
+                dataFile.createNewFile();
             } catch (IOException e) {
                 e.printStackTrace();
             }
         } else {
             try (ObjectInputStream serial = new ObjectInputStream(new FileInputStream(dataFile))) {
-                employeeHashMap =(HashMap<String, Employee>) serial.readObject();
+                employeeHashMap = (HashMap<String, Employee>) serial.readObject();
                 return employeeHashMap;
             } catch (FileNotFoundException e) {
                 e.printStackTrace();

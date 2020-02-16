@@ -18,7 +18,7 @@ public class Service implements LangManager.PropertiesListener {
     private static Data data;
     private static LangManager langManager;
     private static ResourceBundle properties;
-    private static  Logger logger;
+    private static Logger logger;
 
     private void add() {
         logger.write("Add method start");
@@ -29,19 +29,19 @@ public class Service implements LangManager.PropertiesListener {
 
     private void find() {
         String lastName = Console.findEmployee();
-        if(checkByLastName(lastName)){
+        if (checkByLastName(lastName)) {
             Employee employee = employeeHashMap.get(lastName);
-            Console.print(properties.getString("FIRST_NAME") + employee.getFirstName()+ " | "
-                        + properties.getString("LAST_NAME") + employee.getLastName());
-        }else {
+            Console.print(properties.getString("FIRST_NAME") + employee.getFirstName() + " | "
+                    + properties.getString("LAST_NAME") + employee.getLastName());
+        } else {
             Console.print(properties.getString("WRONG_LAST_NAME"));
         }
     }
 
     private void print() {
-        if(employeeHashMap.isEmpty()){
+        if (employeeHashMap.isEmpty()) {
             Console.print(properties.getString("EMPLOYEE_LIST_IS_EMPTY"));
-        }else{
+        } else {
 
             Collection<Employee> collection = employeeHashMap.values();
             for (Employee employee : collection)
@@ -52,7 +52,7 @@ public class Service implements LangManager.PropertiesListener {
 
     private void remove() {
         String lastName = Console.removeEmployee();
-        if(checkByLastName(lastName)){
+        if (checkByLastName(lastName)) {
             employeeHashMap.remove(lastName);
             Console.print(properties.getString("EMPLOYEE_REMOVED"));
         } else {
@@ -60,7 +60,7 @@ public class Service implements LangManager.PropertiesListener {
         }
     }
 
-    private boolean checkByLastName(String lastName){
+    private boolean checkByLastName(String lastName) {
         return employeeHashMap.containsKey(lastName);
     }
 
@@ -93,40 +93,38 @@ public class Service implements LangManager.PropertiesListener {
         return true;
     }
 
-    public  void run(){
+    public void run() {
         logger = Logger.getLogger("Test");
         logger.write("START PROGRAM");
         init();
-        if (readFile() != null){
+        if (readFile() != null) {
             employeeHashMap = readFile();
         }
 
         boolean b = true;
         chooseLanguage();
 
-        while(b) {
+        while (b) {
             Console.print(properties.getString("ENTER_COMMAND"));
             b = readCommand(Console.readCommand());
         }
 
     }
 
-    private void init(){
+    private void init() {
         logger.write("Init method start");
         langManager = LangManager.getInstance();
         employeeHashMap = new HashMap<>();
         data = new Data();
     }
 
-    private void chooseLanguage(){
+    private void chooseLanguage() {
         String str = Console.chooseLanguage();
-        if(str.equals(StringUtil.EN)) {
+        if (str.equals(StringUtil.EN)) {
             langManager.setProperties(LangManager.getInstance().locales[0]);
-        }
-        else if(str.equals(StringUtil.RU))  {
+        } else if (str.equals(StringUtil.RU)) {
             langManager.setProperties(LangManager.getInstance().locales[1]);
-        }
-        else{
+        } else {
             Console.print(StringUtil.WRONG_LANGUAGE);
             chooseLanguage();
         }
@@ -135,14 +133,15 @@ public class Service implements LangManager.PropertiesListener {
 
     @Override
 
-    public  void changeProperties() {
+    public void changeProperties() {
         properties = langManager.getProperties();
     }
-    private void writeFile(){
+
+    private void writeFile() {
         data.writeFile(employeeHashMap);
     }
 
-    private Map<String, Employee> readFile(){
-       return data.readFile();
+    private Map<String, Employee> readFile() {
+        return data.readFile();
     }
 }

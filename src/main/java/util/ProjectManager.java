@@ -11,7 +11,7 @@ public final class ProjectManager {
     private static ProjectManager instance;
     private Settings settings;
 
-    private ProjectManager(){
+    private ProjectManager() {
         try {
             settings = XmlParser.parse();
         } catch (ParserConfigurationException | SAXException | IOException e) {
@@ -19,18 +19,19 @@ public final class ProjectManager {
         }
     }
 
-    public static void init(){
-        if(instance == null){
+    public static void init() {
+        if (instance == null) {
             instance = new ProjectManager();
         }
+        LangManager.init();
     }
 
-    public static ProjectManager getInstance(){
+    public static ProjectManager getInstance() {
         init();
         return instance;
     }
 
-    public Settings getSettings(){
+    public Settings getSettings() {
         return settings;
     }
 }

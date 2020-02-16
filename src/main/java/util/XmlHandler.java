@@ -20,13 +20,13 @@ public class XmlHandler extends DefaultHandler {
     private boolean bLogPrefix;
     private boolean bDataFile;
 
-    public Settings getSettings(){
+    public Settings getSettings() {
         return this.settings;
     }
 
     @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes) {
-        if(qName.equalsIgnoreCase("LOGGER")){
+        if (qName.equalsIgnoreCase("LOGGER")) {
             settings = new Settings();
         }
         if (qName.equalsIgnoreCase("TYPE")) {
@@ -63,10 +63,10 @@ public class XmlHandler extends DefaultHandler {
         } else if (bDateFormat) {
             settings.setDateTimeFormatter(DateTimeFormatter.ofPattern(new String(ch, start, length)));
             bDateFormat = false;
-        } else if (bLogPrefix){
+        } else if (bLogPrefix) {
             settings.setLogPrefix(new String(ch, start, length));
             bLogPrefix = false;
-        } else if (bDataFile){
+        } else if (bDataFile) {
             settings.setDataFile(new File(new String(ch, start, length)));
             bDataFile = false;
         }
