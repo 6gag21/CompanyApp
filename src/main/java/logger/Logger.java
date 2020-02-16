@@ -6,7 +6,6 @@ import util.ProjectManager;
 import java.io.*;
 import java.time.LocalDateTime;
 
-
 public class Logger implements LoggerManagement {
 
     private Settings settings;

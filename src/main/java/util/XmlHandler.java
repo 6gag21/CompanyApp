@@ -47,6 +47,7 @@ public class XmlHandler extends DefaultHandler {
         if (qName.equalsIgnoreCase("pathToData")) {
             bDataFile = true;
         }
+
     }
 
     @Override
